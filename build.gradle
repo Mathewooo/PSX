@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+}
+
+group 'gg.psx'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.17")
+}
+
+build {
+    dependsOn(shadowJar)
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'gg.psx.Main')
+    }
+}
