@@ -2,6 +2,7 @@ package gg.psx;
 
 import gg.psx.event.CreateShop;
 import gg.psx.event.OnNameChange;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -13,7 +14,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import javax.security.auth.login.LoginException;
 
 public class Main {
-    private static final String token = "MTAwNTgyMDE3NDE1MjI1NzUzNg.Gz10b5.61rqIcDP2bTL0txXRT16mJk5Y1FOvBL4suJkbc";
+    private static final String token = Dotenv.configure().load().get("TOKEN");
     private static Main instance;
     public String shopEmoji = "🛒";
     public String categoryName = shopEmoji + "shops" + shopEmoji;
