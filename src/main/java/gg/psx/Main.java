@@ -1,6 +1,8 @@
 package gg.psx;
 
 import gg.psx.event.CreateShop;
+import gg.psx.event.DeleteShop;
+import gg.psx.event.StockAInfo;
 import gg.psx.event.OnNameChange;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
@@ -31,8 +33,26 @@ public class Main {
     }
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        JDA jda = JDABuilder.createDefault(token).setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS_AND_STICKERS).setMemberCachePolicy(MemberCachePolicy.ALL).disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE).setBulkDeleteSplittingEnabled(false).setCompression(Compression.NONE).setActivity(Activity.watching("PSX BOT!")).addEventListeners(new CreateShop(), new OnNameChange()).build();
-        jda.updateCommands().addCommands(Commands.slash("create_shop", "Vytvor si shop!").addOption(OptionType.STRING, "predaj", "Text, ktorý oznamuje čo chceš predaváť", false, false).addOption(OptionType.ATTACHMENT, "proof", "Fotka na proof", false, false).addOption(OptionType.STRING, "kontakt", "Kontakt pre kupujúceho", false, false)).queue();
+        JDA jda = JDABuilder
+                .createDefault(token)
+                .setEnabledIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
+                .setBulkDeleteSplittingEnabled(false).setCompression(Compression.NONE)
+                .setActivity(Activity.watching("PSX BOT!"))
+                .addEventListeners(new CreateShop(), new StockAInfo(), new DeleteShop(), new OnNameChange())
+                .build();
+        jda.updateCommands().addCommands(Commands.slash("create_shop", "Vytvor si shop!")
+                .addOption(OptionType.STRING, "predaj", "Text, ktorý oznamuje čo chceš predaváť", true, false)
+                .addOption(OptionType.ATTACHMENT, "fotka", "Fotka na, ktorej bude čo chceš predávať", true, false)
+                .addOption(OptionType.STRING, "kontakt", "Kontakt pre kupujúceho", true, false),
+                Commands.slash("stock_a_info", "Pridaj nový stock do tvojho shopu!")
+                        .addOption(OptionType.STRING, "predaj", "Text, ktorý oznamuje čo ponúkaš v novom stocku (nieje povinné)", false, false)
+                        .addOption(OptionType.STRING, "info", "Random Info pre ostatných (nieje povinné)", false, false)
+                        .addOption(OptionType.ATTACHMENT, "fotka", "Fotka s tvojim novým stockom (nieje povinné)", false, false),
+                Commands.slash("delete_shop", "Vymaž si shop!")
+                        .addOption(OptionType.STRING, "shop", "Shop, ktorý chceš vymazať. (funguje iba pre adminov, ak nemáš admina tak to vymaže shop tebe!)", false, false))
+                .queue();
         jda.awaitReady();
         Role shopRole = checkForRole(jda);
         if (shopRole != null) shopRoleID = shopRole.getId();
