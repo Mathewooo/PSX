@@ -15,13 +15,13 @@ public class CreateShop extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("create_shop")) return;
-        if (!event.getMember().getRoles().contains(event.getJDA().getRoleById(Main.getShopRoleID()))) {
+        if (!event.getMember().getRoles().contains(event.getJDA().getRoleById(Main.getShopRoleID(event.getGuild().getId())))) {
             event.reply("Nemáš permissie na vytvorenie shopu! Permisie si môžeš zakúpiť u majiteľa.").queue();
             return;
         }
         Category category = null;
         try {
-            category = event.getJDA().getCategoriesByName(Main.getInstance().getCategoryName(), true).get(0);
+            category = event.getGuild().getCategoriesByName(Main.getInstance().getCategoryName(), true).get(0);
         } catch (IndexOutOfBoundsException ignored) {}
         if (Utils.checkIfChannelExists(event, Utils.returnShopName(event.getUser().getName()), false) == null) {
             if (category == null)

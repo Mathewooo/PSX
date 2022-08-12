@@ -11,16 +11,16 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 
-public class StockAInfo extends ListenerAdapter {
+public class StockAndInfo extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("stock-a-info")) return;
-        if (!event.getMember().getRoles().contains(event.getJDA().getRoleById(Main.getShopRoleID()))) {
+        if (!event.getMember().getRoles().contains(event.getGuild().getRoleById(Main.getShopRoleID(event.getGuild().getId())))) {
             event.reply("Z určitého dôvodu boli tvoje permisie pre shop odobraté! Pre ďalšie informácie kontaktujte majiteľa alebo adminov.").queue();
             return;
         }
         if (Utils.checkIfChannelExists(event, Utils.returnShopName(event.getUser().getName()), false) != null) {
-            event.getJDA().getTextChannels().forEach(textChannel -> {
+            event.getGuild().getTextChannels().forEach(textChannel -> {
                 if (textChannel.getName().equalsIgnoreCase(Utils.returnShopName(event.getUser().getName()))) {
                     textChannel.sendTyping().queue();
                     sendStockEmbed(event, event.getUser(), textChannel);
