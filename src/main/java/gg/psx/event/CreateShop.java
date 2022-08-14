@@ -15,18 +15,16 @@ public class CreateShop extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("create_shop")) return;
-        if (!event.getMember().getRoles().contains(event.getJDA().getRoleById(Main.getShopRoleID(event.getGuild().getId())))) {
+        if (!event.getMember().getRoles().contains(event.getGuild().getRoleById(Main.getShopRoleID(event.getGuild().getId())))) {
             event.reply("Nemáš permissie na vytvorenie shopu! Permisie si môžeš zakúpiť u majiteľa.").queue();
             return;
         }
-        Category category = null;
-        try {
-            category = event.getGuild().getCategoriesByName(Main.getInstance().getCategoryName(), true).get(0);
-        } catch (IndexOutOfBoundsException ignored) {}
-        if (Utils.checkIfChannelExists(event, Utils.returnShopName(event.getUser().getName()), false) == null) {
+        Category category = Utils.returnCategory(event.getGuild());
+        String shopName = Utils.returnShopName(event.getUser().getName());
+        if (Utils.checkIfChannelExists(event, shopName, false) == null) {
             if (category == null)
                 category = event.getGuild().createCategory(Main.getInstance().getCategoryName()).complete();
-            category.createTextChannel(Utils.returnShopName(event.getUser().getName())).queue(textChannel -> {
+            category.createTextChannel(shopName).queue(textChannel -> {
                 textChannel.sendTyping().queue();
                 sendEmbedAfterCreation(event, event.getUser(), textChannel);
                 textChannel.getManager().setTopic("Shop - " + event.getUser().getName()).queue();

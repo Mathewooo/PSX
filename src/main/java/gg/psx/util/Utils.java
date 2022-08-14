@@ -1,6 +1,8 @@
 package gg.psx.util;
 
 import gg.psx.Main;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.Event;
 
@@ -24,7 +26,16 @@ public class Utils {
     public static void ignore(Runnable runnable) {
         try {
             runnable.run();
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
+    }
+
+    public static Category returnCategory(Guild guild) {
+        Category category = null;
+        try {
+            category = guild.getCategoriesByName(Main.getInstance().getCategoryName(), true).get(0);
+        } catch (IndexOutOfBoundsException ignored) {}
+        return category;
     }
 
     @FunctionalInterface
